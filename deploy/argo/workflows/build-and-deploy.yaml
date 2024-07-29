@@ -1,0 +1,45 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  name: build-and-deploy
+spec:
+  entrypoint: build-deploy
+  templates:
+    - name: build-deploy
+      steps:
+        - - name: build
+            template: build
+        - - name: deploy
+            template: deploy
+            arguments:
+              parameters:
+                - name: image-tag
+                  value: "{{steps.build.outputs.result}}"
+
+    - name: build
+      container:
+        image: docker:latest
+        command: ["/bin/sh"]
+        args:
+          [
+            "-c",
+            "docker build -t your-registry/your-app-image:latest . && echo 'latest'",
+          ]
+      outputs:
+        parameters:
+          - name: result
+            valueFrom:
+              path: /tmp/image-tag
+
+    - name: deploy
+      container:
+        image: bitnami/kubectl:latest
+        command: ["/bin/sh"]
+        args:
+          [
+            "-c",
+            "kubectl set image deployment/vite-app vite-app=your-registry/your-app-image:{{inputs.parameters.image-tag}}",
+          ]
+      inputs:
+        parameters:
+          - name: image-tag
