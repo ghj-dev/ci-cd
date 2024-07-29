@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="box">box</div>
+    <script>
+      //   ;(function () {
+      //     console.log(1)
+      //     setTimeout(() => {
+      //       console.log(2)
+      //       Promise.resolve().then((data) => {
+      //         console.log(3)
+      //       })
+      //     })
+      //     new Promise((resolve) => {
+      //       resolve()
+      //       console.log(4)
+      //     })
+      //       .then(() => {
+      //         console.log(5)
+      //         setTimeout(() => {
+      //           console.log(6)
+      //         })
+      //       })
+      //       .then(() => console.log(7))
+      //     console.log(8)
+      //   })()
+
+      //重点 await会中断后面的代码，需要等所有的同步任务和微任务执行完成才会执行await后面的代码
+      //   ;(async function () {
+      async function async1() {
+        console.log("async1 start")
+        await async2()
+        console.log("async1 end")
+      }
+
+      async function async2() {
+        console.log("async2")
+        //这里面加了return 结果就不一样了
+        return new Promise((resolve) => {
+          console.log("async3")
+          resolve()
+        }).then(() => {
+          console.log("async3 then")
+        })
+      }
+
+      console.log("script start")
+      setTimeout(() => {
+        console.log("setTimeOut")
+      }, 0)
+      async1()
+      new Promise(function (reslove) {
+        console.log("promise1")
+        reslove()
+      }).then(function () {
+        console.log("promise2")
+      })
+      console.log("script end")
+      //   })()
+
+      //   //阿里面试题
+      //   let a = {
+      //     n: 1,
+      //   }
+      //   let b = a
+      //   a.x = a = {
+      //     n: 2,
+      //   }
+      //   console.log(a.x) //undefined
+      //   console.log(b) //{n:1,x:{n:2}}
+
+      // var obj = {
+      //   4: 3,
+      //   5: 4,
+      //   length: 3,
+      //   splice: Array.prototype.splice,
+      //   push: Array.prototype.push,
+      // }
+      // obj.push(1)
+      // obj.push(2)
+      // console.log(obj)
+
+      //单例模式     //保证实例全局唯一并提供入口
+      //工厂模式     //通过传入不同的参数，返回不同的组件和数据
+      //发布订阅模式  //
+      //观察者模式   //定义一种一对多的条件关系，当父组件状态发生变化时，子组件重新渲染
+      //代理模式     //可以用于条件渲染，延迟加载
+      //装饰器模式   //给组件添加额外的功能，高阶组件
+
+      //class 本质
+      // class MyClass {}
+      // console.log(MyClass.prototype === Function.prototype) //false
+
+      // function retryPromise(promiseFactory, retries, delay) {
+      //   return new Promise((resolve, reject) => {
+      //     function attempt() {
+      //       promiseFactory()
+      //         .then(resolve)
+      //         .catch((error) => {
+      //           if (retries === 0) {
+      //             reject(error)
+      //           } else {
+      //             retries--
+      //             setTimeout(attempt, delay)
+      //           }
+      //         })
+      //     }
+      //     attempt()
+      //   })
+      // }
+      // async function fn() {
+      //   try {
+      //     await setTimeout(() => {
+      //       throw new Error("xxxx")
+      //     })
+      //   } catch (error) {
+      //     console.log("xxxx")
+      //   }
+      // }
+      // fn()
+      // const p1 = new Promise((resolve) => {
+      //   setTimeout(() => {
+      //     resolve("resolve3")
+      //     console.log("timer1")
+      //   }, 0)
+      //   resolve("resovle1")
+      //   resolve("resolve2")
+      // })
+      //   .then((res) => {
+      //     console.log(res)
+      //     setTimeout(() => {
+      //       console.log(p1)
+      //     }, 1000)
+      //   })
+      //   .finally((res) => {
+      //     console.log("finally", res)
+      //   })
+
+      // function fn(){
+
+      // }
+      // setTimeout(function () {
+      //   console.log(1)
+      // }, 0)
+
+      // new Promise(function executor(resolve) {
+      //   console.log(2)
+      //   for (var i = 0; i < 10000; i++) {}
+      //   console.log(3)
+      // }).then(function () {
+      //   console.log(4)
+      // })
+
+      // console.log(5)
+      // const p1 = new Promise((resolve) => {
+      //   setTimeout(() => {
+      //     resolve("resolve3")
+      //     console.log("timer1")
+      //   }, 0)
+      //   resolve("resovle1")
+      //   resolve("resolve2")
+      // })
+      //   .then((res) => {
+      //     console.log(res)
+      //     setTimeout(() => {
+      //       console.log(p1)
+      //     }, 1000)
+      //   })
+      //   .finally((res) => {
+      //     console.log("finally", res)
+      //   })
+      // function li(count) {
+      //   const ul = document.createElement("ul")
+      //   const box = document.getElementById("box")
+      //   for (let i = 0; i < count; i++) {
+      //     const li = document.createElement("li")
+      //     ul.appendChild(li)
+      //   }
+      //   box.appendChild(ul)
+      // }
+      // li(5)
+      // var a = 6
+      // const obj = {
+      //   a: "3",
+      //   b: function () {
+      //     console.log(this)
+      //     return () => {
+      //       console.log(this)
+      //       return function () {
+      //         console.log(this)
+      //       }
+      //     }
+      //   },
+      //   c: () => {
+      //     return function () {
+      //       console.log(this.a)
+      //     }
+      //   },
+      //   d: function () {
+      //     console.log(this)
+      //     return function () {
+      //       console.log(this)
+      //     }
+      //   },
+
+      //   e: function () {
+      //     let fn = function () {
+      //       console.log(this)
+      //     }
+      //     return fn()
+      //   },
+      // }
+      // obj.b()()()
+      // obj.c()()
+      // obj.d()()()
+      // obj.e()
+
+      // const obj1 = {
+      //   a: 123,
+      //   fn: function () {
+      //     return this
+      //   },
+      // }
+      // const obj2 = {
+      //   a: 456,
+      //   fn: function () {
+      //     return obj1.fn()
+      //   },
+      // }
+      // console.log(obj2.fn())
+
+      // const obj = {
+      //   name: "obj",
+      //   getName: function () {
+      //     console.log(this)
+      //     return () => {
+      //       console.log(this)
+      //       return this.name
+      //     }
+      //   },
+      // }
+      // const p2 = obj.getName
+      // p2()()
+      // main.js
+      // const worker = new Worker("./work.js")
+      // // 向 Worker 发送数据
+      // worker.postMessage([1, 2, 3, 4, 5])
+      // // 监听 Worker 返回的消息
+      // worker.onmessage = function (event) {
+      //   console.log("Result:", event.data) // 输出：Result: 15
+      // }
+      // // 处理 Worker 错误
+      // worker.onerror = function (error) {
+      //   console.error("Worker error:", error)
+      // }
+      const worker = new SharedWorker("sharedWorker.js")
+      worker.port.start()
+      // 监听 Worker 返回的消息
+      worker.port.onmessage = function (event) {
+        console.log("Shared Worker message:", event.data)
+      }
+      // 向 Worker 发送消息
+      worker.port.postMessage("Hello from main Worker")
+
+      // const worker2 = new SharedWorker("sharedWorker.js")
+      // worker2.port.start()
+      // // 监听 Worker 返回的消息
+      // worker2.port.onmessage = function (event) {
+      //   console.log("Shared Worker message:", event.data)
+      // }
+      // 向 Worker 发送消息
+      // worker2.port.postMessage("Hello from main Worker2")
+
+      const promise1 = new Promise((resolve, reject) => {
+        resolve(1)
+      })
+      const promise2 = new Promise((resolve, reject) => {
+        resolve(2)
+      })
+      promise1
+        .then((result) => {
+          console.log("result1", "1-1")
+          new Promise((resolve) => {
+            resolve(333)
+          })
+        })
+        .then((result) => {
+          console.log("result2", "1 - 2", result)
+        })
+        .then((result) => {
+          console.log("result3", "1 - 3", result)
+        })
+
+      promise2
+        .then((result) => {
+          console.log("result1", "2-1")
+        })
+        .then((result) => {
+          console.log("result2", "2 - 2")
+        })
+        .then((result) => {
+          console.log("result3", "2 - 3", result)
+        })
+        .then((result) => {
+          console.log("result3", "2 - 4", result)
+        })
+    </script>
+  </body>
+</html>

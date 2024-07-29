@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+      #inner {
+        width: 100%;
+        height: 600px;
+        background-color: aqua;
+        overflow: scroll;
+      }
+      .item {
+        height: 50px;
+        width: 200px;
+        background-color: brown;
+        margin-bottom: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      <div id="inner"></div>
+    </div>
+  </body>
+  <script>
+    const data = []
+    for (let i = 0; i < 100; i++) {
+      data.push({
+        id: i,
+        value: `我是第${i}个数据`,
+      })
+    }
+    //可视区域个数，缓存区个数5
+    const itemHeight = 50 + 12
+    const inner = document.getElementById("inner")
+    const innerHeight = inner.offsetHeight
+    const visibleCount = Math.ceil(innerHeight / itemHeight) + 1
+    // const visibleCount = Math.floor(inner.clientHeight / itemHeight) + 1
+    let startIndex = 0
+    inner.addEventListener("scroll", () => {
+      render()
+    })
+
+    function render() {
+      const fragment = document.createDocumentFragment()
+      //   console.log(startIndex, data.length)
+      if (startIndex > data.length) {
+        return
+      }
+      for (let i = startIndex; i < startIndex + visibleCount; i++) {
+        if (data[i]) {
+          const item = document.createElement("div")
+          item.className = "item"
+          item.innerHTML = data[i]?.value
+          fragment.appendChild(item)
+        }
+      }
+      inner.appendChild(fragment)
+      startIndex = startIndex + visibleCount
+    }
+    render()
+  </script>
+</html>
